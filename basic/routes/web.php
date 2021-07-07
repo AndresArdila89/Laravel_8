@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
-
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,5 +22,7 @@ Route::get('/', function () {
 Route::get('/home', [ContactController::class,'index'])->name('ho')->middleware('age');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
+    // $users = User::all();
+    $users = DB::table('users')->get();
+    return view('dashboard', compact('users'));
 })->name('dashboard');
