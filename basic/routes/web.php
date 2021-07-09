@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -26,8 +27,9 @@ Route::get('/home', [ContactController::class,'index'])->name('ho')->middleware(
 
 Route::get('/category/all', [CategoryController::class, 'AllCat'])->name('all.category');
 Route::post('/category/add', [CategoryController::class, 'AddCat'])->name('store.category');
+Route::get('/category/edit/{id}', [CategoryController::class, 'Edit'])->name('edit.category');
 
-
+Route::post('category/update/{id}', [CategoryController::class, 'Update'])->name('update.category');
 
 
 

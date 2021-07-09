@@ -11,7 +11,23 @@ use Illuminate\Support\Facades\Redirect;
 class CategoryController extends Controller
 {
     public function AllCat(){
-        return view('admin.category.index');
+        // using ORM
+        // $categories = Category::all();
+        $categories = Category::latest()->paginate(5);
+
+        // using QUERY BUILDER
+        // $categories = DB::table('categories')->latest()->get(); 
+
+
+        /**
+         *  JOIN TABLES WITH QUERY BUILDER
+         *  $categories = DB::table('categories')
+         *      ->join('users', 'categories.user_id', 'users.id')
+         *      ->select('categories.*', 'users.name')
+         *      ->latest()->paginate(3);
+         */ 
+        
+        return view('admin.category.index', compact('categories'));
     }
 
     public function AddCat(Request $request ){
@@ -43,5 +59,20 @@ class CategoryController extends Controller
         // DB::table('categories')->insert($data);
 
         return Redirect()->back()->with('success','Category Inserted Successfull');
+    }
+
+    public function Edit($id){
+        $categories = Category::find($id);
+
+        return view('admin.category.edit',compact('categories'));
+    }
+
+    public function Update(Request $request , $id){
+        $update = Category::find($id)->update([
+            'category_name' => $request->category_name,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        return Redirect()->route('all.category')->with('success','Category Updated Successfull'); 
     }
 }
