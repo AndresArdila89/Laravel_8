@@ -14,6 +14,7 @@ class CategoryController extends Controller
         // using ORM
         // $categories = Category::all();
         $categories = Category::latest()->paginate(5);
+        $trashCategories = Category::onlyTrashed()->latest()->paginate(3);
 
         // using QUERY BUILDER
         // $categories = DB::table('categories')->latest()->get(); 
@@ -27,7 +28,7 @@ class CategoryController extends Controller
          *      ->latest()->paginate(3);
          */ 
         
-        return view('admin.category.index', compact('categories'));
+        return view('admin.category.index', compact('categories', 'trashCategories'));
     }
 
     public function AddCat(Request $request ){
@@ -73,6 +74,29 @@ class CategoryController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
-        return Redirect()->route('all.category')->with('success','Category Updated Successfull'); 
+        // QUERY BUILDER 
+        // $data = array();
+        // $data['category_name'] = $request->category_name;
+        // $data['user_id'] = Auth::user()->id;
+        // DB::table('categories')->where('id',$id)->update($data);
+
+        return Redirect()->route('all.category')->with('success','Category Successfully Updated'); 
+    }
+
+    public function SoftDelete($id)
+    {
+        $delete = Category::find($id)->delete();
+        return Redirect()->back()->with('success', 'Category Successfully Deleted');
+    }
+
+    public function Restore($id)
+    {
+        $delete = Category::withTrashed()->find($id)->restore();
+        return Redirect()->back()->with('success','Category Successfully Restored');
+    }
+
+    public function PermanentDelete($id){
+        $delete = Category::onlyTrashed()->find($id)->forceDelete();
+        return Redirect()->back()->with('success','Category Deleted Permanently');
     }
 }

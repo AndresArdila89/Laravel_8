@@ -12,11 +12,10 @@
                     <div class="card">
                         @if (session('success'))
                     
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
                         @endif
                         <div class="card-header"> All Category</div>
                         <table class="table">
@@ -40,7 +39,7 @@
                                 <td> {{ $category->created_at->diffForHumans() }}</td>
                                 <td> 
                                     <a href="{{ url('category/edit/'.$category->id) }}" class="btn btn-info">Edit</a>
-                                    <a href="" class="btn btn-danger">Delete</a>
+                                    <a href="{{ url('category/softdelete/'. $category->id) }}" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
                             @endforeach
@@ -63,10 +62,46 @@
                                         <span class="text-danger"> {{ $message }}</span>
                                     @enderror
                                 </div>
-                    
                                 <button type="submit" class="btn btn-primary">Add Category</button>
                             </form>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="card">
+
+                        <div class="card-header"> Deleted Category</div>
+                        <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Serial No</th>
+                            <th scope="col">Category Name</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Created At</th>
+                            <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @php($i = 1) --}}
+                            @foreach ($trashCategories as $category)
+                                
+                            <tr>
+                                <th scope="row">{{ $categories->firstItem() + $loop->index }}</th>
+                                <td> {{ $category->category_name}}</td>
+                                <td> {{ $category->user->name }}</td>
+                                <td> {{ $category->created_at->diffForHumans() }}</td>
+                                <td> 
+                                    <a href="{{ url('category/restore/'.$category->id) }}" class="btn btn-info">Restore</a>
+                                    <a href="{{ url('category/permanentdelete/'.$category->id) }}" class="btn btn-danger">Permanent Delete</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        </table>
+                        {{ $trashCategories->links() }}
                     </div>
                 </div>
             </div>
